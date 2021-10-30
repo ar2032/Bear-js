@@ -1,3 +1,28 @@
+function start() {
+    //create bear
+    bear = new Bear();
+     // Add an event listener to the keypress event
+    document.addEventListener("keydown", moveBear, false);
+    document.getElementById("speedBears").onchange=Bear.setSpeed;
+    check=false
+    //create new array for bees
+
+    bees = new Array();
+    
+    hits.innerHTML=0
+    duration.innerHTML=0
+    periodTimer.innerHTML=0
+    lastStingTime=null;
+    //create bees
+    makeBees();
+    updateBees()
+    lastStingTime = new Date();
+    document.getElementById("speedBears").addEventListener("change",setSpeed,false);
+}   
+
+
+
+
 function Bear() {
     this.dBear = 100
     this.htmlElement = document.getElementById("bear");
@@ -29,29 +54,18 @@ function Bear() {
         if (this.y < 0) this.y = 0;
         if (this.y > h - ih) this.y = h - ih;
     };
-    this.setSpeed=function(){
-        let x=document.getElementById("speedBears").value;
-        Bear.dBear=x;
-    };
 }
 
-function start() {
-    //create bear
-    bear = new Bear();
-     // Add an event listener to the keypress event
-    document.addEventListener("keydown", moveBear, false);
-    document.getElementById("speedBears").onchange=Bear.setSpeed;
-    //create new array for bees
-    bees = new Array();
-    //create bees
-    makeBees();
-    updateBees()
-}
+function setSpeed(){
+    bear.dBear=document.getElementById("speedBears").value;
+    
+};
 
 // Handle keyboad events
 // to move the bear
 function moveBear(e) {
     //codes of the four keys
+    check=true;
     const KEYUP = 38;
     const KEYDOWN = 40;
     const KEYLEFT = 37;
@@ -184,7 +198,15 @@ function updateBees() { // update loop for game
     //use a fixed update period
     let period = document.getElementById("periodTimer").value;
     //update the timer for the next move
-    updateTimer = setTimeout('updateBees()', period);
+    
+    if (hits.innerHTML>=1000){
+        alert("Game Over");
+        clearTimeout(updateTimer);
+        start();
+    }
+    else{
+        updateTimer = setTimeout('updateBees()', period);
+    }
 
 }
 
@@ -194,17 +216,20 @@ function isHit(defender, offender) {
         score = Number(score) + 1; //increment the score
         hits.innerHTML = score; //display the new score
         //calculate longest duration
-        let newStingTime = new Date();
-        let thisDuration = newStingTime - lastStingTime;
-        lastStingTime = newStingTime;
-        let longestDuration = Number(duration.innerHTML);
-        if (longestDuration === 0) {
-            longestDuration = thisDuration;
-        } 
-        else {
-            if (longestDuration < thisDuration) longestDuration = thisDuration;
+        if (check==true){
+            let newStingTime = new Date();
+            let thisDuration = newStingTime - lastStingTime;
+            lastStingTime = newStingTime;
+            let longestDuration = Number(duration.innerHTML);
+            if (longestDuration === 0) {
+                longestDuration = thisDuration;
+            } 
+            else {
+                if (longestDuration < thisDuration) longestDuration = thisDuration;
+            }
+            document.getElementById("duration").innerHTML = longestDuration;
         }
-        document.getElementById("duration").innerHTML = longestDuration;
+        
     }
 }
 
@@ -230,3 +255,4 @@ function overlap(element1, element2) {
     }
     return true;
 }
+
