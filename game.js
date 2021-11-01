@@ -3,15 +3,14 @@ function start() {
     bear = new Bear();
      // Add an event listener to the keypress event
     document.addEventListener("keydown", moveBear, false);
-    document.getElementById("speedBears").onchange=Bear.setSpeed;
+    
     check=false
     //create new array for bees
-
     bees = new Array();
-    
     hits.innerHTML=0
     duration.innerHTML=0
     periodTimer.innerHTML=0
+    bees.innerHTML=[]
     lastStingTime=null;
     //create bees
     makeBees();
@@ -19,8 +18,6 @@ function start() {
     lastStingTime = new Date();
     document.getElementById("speedBears").addEventListener("change",setSpeed,false);
 }   
-
-
 
 
 function Bear() {
@@ -37,6 +34,7 @@ function Bear() {
         this.display();
     };
     this.display = function() {
+        this.fitBounds();
         this.htmlElement.style.left = this.x + "px";
         this.htmlElement.style.top = this.y + "px";
         this.htmlElement.style.display = "block";
@@ -49,11 +47,18 @@ function Bear() {
         let t = parent.offsetTop;
         let w = parent.offsetWidth;
         let h = parent.offsetHeight;
-        if (this.x < 0) this.x = 0;
-        if (this.x > w - iw) this.x = w - iw;
-        if (this.y < 0) this.y = 0;
-        if (this.y > h - ih) this.y = h - ih;
+        if (this.x < 0)this.x = 0;
+        if (this.x > w - iw)this.x = w - iw;
+        if (this.y < 0)this.y = 0;
+        if (this.y > h - ih)this.y = h - ih;
     };
+}
+function restart(){
+    while(bees.length>0){
+        bees[bees.length-1].htmlElement.remove();
+        bees.pop();
+    }
+    start();
 }
 
 function setSpeed(){
