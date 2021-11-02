@@ -10,7 +10,7 @@ function start() {
     hits.innerHTML=0
     duration.innerHTML=0
     periodTimer.innerHTML=0
-    bees.innerHTML=[]
+    nbBees.value=1;
     lastStingTime=null;
     //create bees
     makeBees();
@@ -58,6 +58,7 @@ function restart(){
         bees[bees.length-1].htmlElement.remove();
         bees.pop();
     }
+    
     start();
 }
 
@@ -108,7 +109,7 @@ class Bee {
     };
         this.display = function() {
             //adjust position of bee and display it
-            this.fitBounds();//add this to adjust to bounds
+            this.fitBounds();//to adjust to bounds
             this.htmlElement.style.left = this.x + "px";
             this.htmlElement.style.top = this.y + "px";
             this.htmlElement.style.display = "block";
@@ -167,9 +168,15 @@ function createBeeImg(wNum) {
 
 
 function makeBees() {
+    while(bees.length>0){
+        bees[bees.length-1].htmlElement.remove();
+        bees.pop();
+    }
     //get number of bees specified by the user
     let nbBees = document.getElementById("nbBees").value;
+   
     nbBees = Number(nbBees); //try converting the content of the input to a number
+    
     if (isNaN(nbBees)) { //check that the input field contains a valid number
         window.alert("Invalid number of bees");
         return;
@@ -207,7 +214,7 @@ function updateBees() { // update loop for game
     if (hits.innerHTML>=1000){
         alert("Game Over");
         clearTimeout(updateTimer);
-        start();
+        restart();
     }
     else{
         updateTimer = setTimeout('updateBees()', period);
@@ -216,12 +223,13 @@ function updateBees() { // update loop for game
 }
 
 function isHit(defender, offender) {
+    if (check==true){
     if (overlap(defender, offender)) { //check if the two image overlap
         let score = hits.innerHTML;
         score = Number(score) + 1; //increment the score
         hits.innerHTML = score; //display the new score
         //calculate longest duration
-        if (check==true){
+        
             let newStingTime = new Date();
             let thisDuration = newStingTime - lastStingTime;
             lastStingTime = newStingTime;
